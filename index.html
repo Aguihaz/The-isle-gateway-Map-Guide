@@ -197,6 +197,43 @@ body {
 
 }
 
+.coords-box {
+
+    position: absolute;
+
+    right: 20px;
+    top: 20px;
+
+    z-index: 1000;
+
+
+    background: rgba(20,20,20,0.9);
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    color:white;
+
+}
+
+
+.coords-box input {
+
+    width: 220px;
+
+    height: 30px;
+
+}
+
+
+.coords-box button {
+
+    height: 35px;
+
+    cursor:pointer;
+
+}
 
 </style>
 
@@ -210,6 +247,16 @@ body {
 
 
 <div id="map"></div>
+    
+<div class="coords-box">
+
+<input id="coords" placeholder="X,Y,Z">
+
+<button onclick="goCoords()">
+GO
+</button>
+
+</div>
 
 
 
@@ -400,6 +447,51 @@ function toggleWater(){
 
 }
 
+let marker;
+
+
+function goCoords(){
+
+
+    let value = document.getElementById("coords").value;
+
+
+    let parts = value.split(",");
+
+
+    let x = Number(parts[0]);
+
+    let y = Number(parts[1]);
+
+
+
+    let scale = 10;
+
+
+
+    let mapX = 1080 + (x * scale);
+
+    let mapY = 1080 - (y * scale);
+
+
+
+    if(marker){
+
+        map.removeLayer(marker);
+
+    }
+
+
+
+    marker = L.marker([mapY,mapX]).addTo(map);
+
+
+
+    map.setView([mapY,mapX], 2);
+
+
+
+}
 
 
 </script>
