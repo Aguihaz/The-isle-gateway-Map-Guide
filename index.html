@@ -465,15 +465,28 @@ function goCoords(){
 
 
 
-    let scaleX = 4;
+    // limites do mundo Gateway (vamos ajustar depois)
 
-    let scaleY = 1;
+    let minX = -120000;
+    let maxX = 120000;
+
+
+    let minY = -120000;
+    let maxY = 120000;
 
 
 
-    let mapX = 1080 + (y * scaleX);
+    // tamanho da imagem
 
-    let mapY = 1020 - (x * scaleY);
+    let imageWidth = 2160;
+    let imageHeight = 2160;
+
+
+
+    let mapX = ((x - minX) / (maxX - minX)) * imageWidth;
+
+
+    let mapY = ((maxY - y) / (maxY - minY)) * imageHeight;
 
 
 
