@@ -2,30 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Gateway Map</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Isle Gateway Map</title>
+
+    <!-- Leaflet (biblioteca do mapa) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
-        body{
-            margin:0;
-            background:#111;
-            color:white;
-            font-family:Arial;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
+        body {
+            margin: 0;
         }
 
-        h1{
-            font-size:50px;
+        #map {
+            width: 100vw;
+            height: 100vh;
         }
     </style>
-
 </head>
+
 <body>
 
-<h1>The Isle Gateway Map 🦖</h1>
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // cria mapa
+    const map = L.map('map', {
+        crs: L.CRS.Simple,
+        minZoom: -2
+    });
+
+    // imagem do mapa (VAI VIRAR TEU MAPA REAL DEPOIS)
+    const image = "https://upload.wikimedia.org/wikipedia/commons/6/6e/BlankMap-World.svg";
+
+    const bounds = [[0,0], [1000,1000]];
+
+    L.imageOverlay(image, bounds).addTo(map);
+
+    map.fitBounds(bounds);
+</script>
 
 </body>
 </html>
