@@ -387,6 +387,19 @@ function toggleMenu(){
 }
 
 
+function toggleWater(){
+
+    if(map.hasLayer(waterLayer)){
+
+        map.removeLayer(waterLayer);
+
+    } else {
+
+        waterLayer.addTo(map);
+
+    }
+
+}
 
 </script>
 
