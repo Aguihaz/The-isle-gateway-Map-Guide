@@ -30,26 +30,31 @@
 
 <script>
     // cria mapa
+const bounds = [[0,0], [2160,2160]];
+
 const map = L.map('map', {
     crs: L.CRS.Simple,
-    minZoom: 0,
+
+    minZoom: -1,
     maxZoom: 4,
+
+    maxBounds: bounds,
     maxBoundsViscosity: 1.0,
 
     zoomAnimation: true,
     zoomSnap: 0.25,
-    wheelPxPerZoomLevel: 200
+    wheelPxPerZoomLevel: 120
 });
+
 
 const image = "images/gatewaymapHT.png";
 
-const bounds = [[0,0], [2160,2160]];
-
-map.setMaxBounds(bounds);
-
 L.imageOverlay(image, bounds).addTo(map);
 
-map.fitBounds(bounds, {
-    animate: true
-});
+
+map.fitBounds(bounds);
+
 </script>
+
+</body>
+</html>
