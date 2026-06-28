@@ -245,13 +245,11 @@ body {
 </button>
 
 
-
 <button class="layer-button">
 
 🛣️ Roads
 
 </button>
-
 
 
 <button class="layer-button">
@@ -261,7 +259,6 @@ body {
 </button>
 
 
-
 <button class="layer-button">
 
 🍖 Food
@@ -269,10 +266,23 @@ body {
 </button>
 
 
-
 <button class="layer-button">
 
 📍 Locations
+
+</button>
+
+
+<button class="layer-button">
+
+🟢 Migration Zones
+
+</button>
+
+
+<button class="layer-button">
+
+🔴 Patrol Zones
 
 </button>
 
@@ -329,14 +339,27 @@ const map = L.map('map', {
 
 
 
-// imagem
-
+// mapa base
 
 const image = "images/gatewaymapHT.png";
 
-
-
 L.imageOverlay(image, bounds).addTo(map);
+
+
+
+
+
+// camada de agua
+
+const waterLayer = L.imageOverlay(
+    "images/watermap.png",
+    bounds
+);
+
+
+waterLayer.addTo(map);
+
+
 
 
 
