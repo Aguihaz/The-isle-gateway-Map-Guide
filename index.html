@@ -33,17 +33,23 @@
 const map = L.map('map', {
     crs: L.CRS.Simple,
     minZoom: 0,
-    maxZoom: 4
+    maxZoom: 4,
+    maxBoundsViscosity: 1.0,
+
+    zoomAnimation: true,
+    zoomSnap: 0.25,
+    wheelPxPerZoomLevel: 200
 });
-    // imagem do mapa (VAI VIRAR TEU MAPA REAL DEPOIS)
-    const image = "images/gatewaymapHT.png";
+
+const image = "images/gatewaymapHT.png";
 
 const bounds = [[0,0], [2160,2160]];
 
-    L.imageOverlay(image, bounds).addTo(map);
+map.setMaxBounds(bounds);
 
-    map.fitBounds(bounds);
+L.imageOverlay(image, bounds).addTo(map);
+
+map.fitBounds(bounds, {
+    animate: true
+});
 </script>
-
-</body>
-</html>
