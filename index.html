@@ -1,60 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Gateway Map</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Gateway Map</title>
 
-    <!-- Leaflet (biblioteca do mapa) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-        }
 
-        #map {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+
+<style>
+
+body {
+    margin: 0;
+}
+
+
+#map {
+    width: 100vw;
+    height: 100vh;
+}
+
+
+
+/* botão abrir menu */
+
+.sidebar-button {
+
+    position: absolute;
+
+    left: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+
+    width: 45px;
+    height: 45px;
+
+
+    background: #222;
+
+    color: white;
+
+
+    border-radius: 8px;
+
+
+    cursor: pointer;
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+
+    font-size: 24px;
+
+
+    z-index: 1000;
+
+}
+
+
+
+/* painel */
+
+.sidebar {
+
+
+    position: absolute;
+
+
+    left: 65px;
+
+    top: 50%;
+
+
+    transform: translateY(-50%);
+
+
+
+    width: 260px;
+
+    height: 50vh;
+
+
+
+    background: rgba(20,20,20,0.95);
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 15px;
+
+
+
+    z-index: 999;
+
+
+
+    display: none;
+
+}
+
+
+
+/* quando abre */
+
+.sidebar.active {
+
+    display: block;
+
+}
+
+
+
+/* botões */
+
+.layer-button {
+
+
+    width: 100%;
+
+    height: 45px;
+
+
+
+    margin-bottom: 10px;
+
+
+
+    background: #333;
+
+
+
+    border-radius: 8px;
+
+
+
+    color: white;
+
+
+
+    border: none;
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 12px;
+
+
+
+    cursor: pointer;
+
+
+
+    font-size: 16px;
+
+}
+
+
+
+.layer-button:hover {
+
+
+    background: #444;
+
+
+}
+
+
+</style>
+
+
 </head>
+
+
 
 <body>
 
+
+
 <div id="map"></div>
 
-<!-- Leaflet JS -->
+
+
+<!-- botão -->
+
+<button class="sidebar-button" onclick="toggleMenu()">
+
+☰
+
+</button>
+
+
+
+
+<!-- menu -->
+
+<div class="sidebar" id="menu">
+
+
+<button class="layer-button">
+
+💧 Water
+
+</button>
+
+
+
+<button class="layer-button">
+
+🛣️ Roads
+
+</button>
+
+
+
+<button class="layer-button">
+
+🕳️ Caves
+
+</button>
+
+
+
+<button class="layer-button">
+
+🍖 Food
+
+</button>
+
+
+
+<button class="layer-button">
+
+📍 Locations
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- Leaflet -->
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+
+
+
 <script>
-    // cria mapa
+
+
+// mapa
+
+
 const bounds = [[0,0], [2160,2160]];
 
+
+
 const map = L.map('map', {
+
     crs: L.CRS.Simple,
 
+
     minZoom: -1.5,
+
     maxZoom: 4,
 
+
     maxBounds: bounds,
+
     maxBoundsViscosity: 1.0,
 
+
     zoomAnimation: true,
+
     zoomSnap: 0.25,
+
     wheelPxPerZoomLevel: 120
+
 });
+
+
+
+
+
+// imagem
 
 
 const image = "images/gatewaymapHT.png";
 
+
+
 L.imageOverlay(image, bounds).addTo(map);
+
 
 
 map.fitBounds(bounds);
 
+
+
+
+
+// abrir menu
+
+
+function toggleMenu(){
+
+
+    document
+
+    .getElementById("menu")
+
+    .classList
+
+    .toggle("active");
+
+
+}
+
+
+
 </script>
 
+
+
+
 </body>
+
 </html>
