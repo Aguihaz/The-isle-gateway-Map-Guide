@@ -26,7 +26,6 @@ body {
 }
 
 
-
 /* botão abrir menu */
 
 .sidebar-button {
@@ -127,17 +126,11 @@ body {
 }
 
 
-
-/* quando abre */
-
 .sidebar.active {
-
 
     opacity: 1;
 
-
     pointer-events: auto;
-
 
     transform: translateY(-50%) translateX(0);
 
@@ -200,9 +193,7 @@ body {
 
 .layer-button:hover {
 
-
     background: #444;
-
 
 }
 
@@ -222,8 +213,6 @@ body {
 
 
 
-<!-- botão -->
-
 <button class="sidebar-button" onclick="toggleMenu()">
 
 ☰
@@ -233,16 +222,16 @@ body {
 
 
 
-<!-- menu -->
-
 <div class="sidebar" id="menu">
 
 
-<button class="layer-button">
+
+<button class="layer-button" onclick="toggleWater()">
 
 💧 Water
 
 </button>
+
 
 
 <button class="layer-button">
@@ -252,11 +241,13 @@ body {
 </button>
 
 
+
 <button class="layer-button">
 
 🕳️ Caves
 
 </button>
+
 
 
 <button class="layer-button">
@@ -266,6 +257,7 @@ body {
 </button>
 
 
+
 <button class="layer-button">
 
 📍 Locations
@@ -273,11 +265,13 @@ body {
 </button>
 
 
+
 <button class="layer-button">
 
 🟢 Migration Zones
 
 </button>
+
 
 
 <button class="layer-button">
@@ -295,17 +289,12 @@ body {
 
 
 
-<!-- Leaflet -->
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
 
 
 <script>
-
-
-// mapa
 
 
 const bounds = [[0,0], [2160,2160]];
@@ -343,21 +332,22 @@ const map = L.map('map', {
 
 const image = "images/gatewaymapHT.png";
 
+
 L.imageOverlay(image, bounds).addTo(map);
 
 
 
 
 
-// camada de agua
+// camada agua (começa desligada)
 
 const waterLayer = L.imageOverlay(
+
     "images/watermap.png",
+
     bounds
+
 );
-
-
-waterLayer.addTo(map);
 
 
 
@@ -370,7 +360,6 @@ map.fitBounds(bounds);
 
 
 // abrir menu
-
 
 function toggleMenu(){
 
@@ -387,22 +376,33 @@ function toggleMenu(){
 }
 
 
+
+
+// liga/desliga agua
+
 function toggleWater(){
+
 
     if(map.hasLayer(waterLayer)){
 
+
         map.removeLayer(waterLayer);
+
 
     } else {
 
+
         waterLayer.addTo(map);
+
 
     }
 
+
 }
 
-</script>
 
+
+</script>
 
 
 
