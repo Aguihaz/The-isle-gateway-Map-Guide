@@ -106,13 +106,13 @@
     <button class="sidebar-button" onclick="toggleMenu()">☰</button>
 
     <div class="sidebar" id="menu">
-        <button class="layer-button" onclick="toggleWater()">💧 Water</button>
-        <button class="layer-button">🛣️ Roads</button>
+        <button class="layer-button" onclick="toggleLayer('water')">💧 Water</button>
+        <button class="layer-button" onclick="toggleLayer('roads')">🛣️ Roads</button>
+        <button class="layer-button" onclick="toggleLayer('migrations')">🟢 Migration Zones</button>
+        <button class="layer-button" onclick="toggleLayer('patrol')">🔴 Patrol Zones</button>
         <button class="layer-button">🕳️ Caves</button>
         <button class="layer-button">🍖 Food</button>
         <button class="layer-button">📍 Locations</button>
-        <button class="layer-button">🟢 Migration Zones</button>
-        <button class="layer-button">🔴 Patrol Zones</button>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -131,12 +131,27 @@
             wheelPxPerZoomLevel: 120
         });
 
-        // Mapa base
+        // Mapa base (Sempre no fundo de tudo)
         const image = "images/gatewaymapHT.png";
         L.imageOverlay(image, bounds).addTo(map);
 
-        // Camada de água (inicia desativada)
-        const waterLayer = L.imageOverlay("images/watermap.png", bounds);
+        // ========================================================
+        // 🧱 GERENCIAMENTO DE CAMADAS E ORDEM VISUAL (Z-INDEX)
+        // ========================================================
+
+        // Criamos painéis customizados para fixar a ordem exata de renderização na tela
+        map.createPane('waterPane').style.zIndex = 401;
+        map.createPane('roadsPane').style.zIndex = 402;
+        map.createPane('migrationsPane').style.zIndex = 403;
+        map.createPane('patrolPane').style.zIndex = 404;
+
+        // Definição das camadas apontando para seus arquivos
+        const layers = {
+            water: L.imageOverlay("images/watermap.png", bounds, { pane: 'waterPane' }),
+            roads: L.imageOverlay("images/roadsmap.png", bounds, { pane: 'roadsPane' }),
+            migrations: L.imageOverlay("images/MigrationZones.png", bounds, { pane: 'migrationsPane' }),
+            patrol: L.imageOverlay("images/PatrolZones.png", bounds, { pane: 'patrolPane' })
+        };
 
         map.fitBounds(bounds);
 
@@ -145,12 +160,15 @@
             document.getElementById("menu").classList.toggle("active");
         }
 
-        // Liga/Desliga camada de água
-        function toggleWater(){
-            if(map.hasLayer(waterLayer)){
-                map.removeLayer(waterLayer);
+        // Função única e inteligente para ligar/desligar qualquer camada mantendo a ordem
+        function toggleLayer(layerName) {
+            const targetLayer = layers[layerName];
+            if (!targetLayer) return;
+
+            if (map.hasLayer(targetLayer)) {
+                map.removeLayer(targetLayer);
             } else {
-                waterLayer.addTo(map);
+                targetLayer.addTo(map);
             }
         }
 
@@ -158,22 +176,18 @@
         // 🛠️ SISTEMA DE CONVERSÃO CORRIGIDO
         // ========================================================
 
-        // Seus pontos base de calibração reais (Ordem: Y, X)
         const jogoA = { y: -425, x: 300 };     
         const pixelA = { lng: 170, lat: 316 }; 
 
         const jogoB = { y: 425, x: -550 };       
         const pixelB = { lng: 1742, lat: 2150 }; 
 
-        // Taxa de conversão precisa baseada na distância real dos seus pontos
         const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
         const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
 
         function converterJogoParaMapa(jogoY, jogoX) {
-            // Calcula a distância exata a partir do Ponto A conhecido
             const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
             const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
-            
             return [lat, lng];
         }
 
@@ -190,18 +204,15 @@
             map.setView(pos, 2); 
         }
 
-        // Função chamada pelo botão "Ir"
         function buscarCoordenada() {
             const inputVal = document.getElementById("game-coords-input").value.trim();
             if (!inputVal) return;
 
-            // Limpa vírgulas e separa por espaços
             const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
-            // Lê estritamente na ordem padrão copiada do jogo: Y, X, Z
             if (numeros.length >= 2) {
-                const jogoY = numeros[0]; // Primeiro número é Y
-                const jogoX = numeros[1]; // Segundo número é X
+                const jogoY = numeros[0]; 
+                const jogoX = numeros[1]; 
                 
                 spawnMarcador(jogoY, jogoX, `Localização encontrada!<br><b>Y:</b> ${jogoY}<br><b>X:</b> ${jogoX}`);
             } else {
