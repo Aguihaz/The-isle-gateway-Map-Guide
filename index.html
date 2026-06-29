@@ -5,7 +5,7 @@
     <title>Gateway Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link class="sheet" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
         body { margin: 0; }
@@ -128,6 +128,43 @@
                 waterLayer.addTo(map);
             }
         }
+
+        // ========================================================
+        // 🛠️ CONFIGURAÇÃO DA CALIBRAÇÃO (DAQUI PRA BAIXO)
+        // ========================================================
+
+        // PASSO 1: Troque estes valores de exemplo pelos seus dados reais do jogo!
+        const jogoA = { x: -2000, y: -2000 };     // Coordenada no jogo (Ponto 1)
+        const pixelA = { lng: 100, lat: 100 };    // Pixel no mapa (Ponto 1)
+
+        const jogoB = { x: 2000, y: 2000 };       // Coordenada no jogo (Ponto 2)
+        const pixelB = { lng: 2000, lat: 2000 };  // Pixel no mapa (Ponto 2)
+
+        // Cálculo da proporção
+        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
+        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
+
+        // Função mágica de conversão
+        function converterJogoParaMapa(jogoX, jogoY) {
+            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
+            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
+            return [lat, lng];
+        }
+
+        // Função para criar o marcador usando dados do jogo
+        function spawnMarcador(jogoX, jogoY, texto) {
+            const pos = converterJogoParaMapa(jogoX, jogoY);
+            L.marker(pos).addTo(map).bindPopup(texto);
+        }
+
+        // PASSO 3: Adicione seus marcadores aqui
+        // Exemplo: spawnMarcador(-98, -114, "Minha Localização");
+
+
+        // ⚙️ FERRAMENTA AUXILIAR: Clique no mapa para ver o Pixel
+        map.on("click", function(e) {
+            alert("Pixel -> lng: " + Math.round(e.latlng.lng) + ", lat: " + Math.round(e.latlng.lat));
+        });
     </script>
 
 </body>
