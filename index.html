@@ -110,9 +110,9 @@
         <button class="layer-button" onclick="toggleLayer('roads')">🛣️ Roads</button>
         <button class="layer-button" onclick="toggleLayer('migrations')">🟢 Migration Zones</button>
         <button class="layer-button" onclick="toggleLayer('patrol')">🔴 Patrol Zones</button>
+        <button class="layer-button" onclick="toggleLayer('locations')">📍 Locations</button>
         <button class="layer-button">🕳️ Caves</button>
         <button class="layer-button">🍖 Food</button>
-        <button class="layer-button">📍 Locations</button>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -144,13 +144,15 @@
         map.createPane('roadsPane').style.zIndex = 402;
         map.createPane('migrationsPane').style.zIndex = 403;
         map.createPane('patrolPane').style.zIndex = 404;
+        map.createPane('locationsPane').style.zIndex = 405;
 
-        // Definição das camadas apontando para seus arquivos (Corrigido para MigrationsZones.png)
+        // Definição das camadas apontando para seus arquivos na pasta images
         const layers = {
             water: L.imageOverlay("images/watermap.png", bounds, { pane: 'waterPane' }),
-            roads: L.imageOverlay("images/roadsmap.png", bounds, { pane: 'roadsPane' }),
+            roads: L.imageOverlay("images/Roads.png", bounds, { pane: 'roadsPane' }),
             migrations: L.imageOverlay("images/MigrationsZones.png", bounds, { pane: 'migrationsPane' }),
-            patrol: L.imageOverlay("images/PatrolZones.png", bounds, { pane: 'patrolPane' })
+            patrol: L.imageOverlay("images/PatrolZones.png", bounds, { pane: 'patrolPane' }),
+            locations: L.imageOverlay("images/Locations.png", bounds, { pane: 'locationsPane' })
         };
 
         map.fitBounds(bounds);
