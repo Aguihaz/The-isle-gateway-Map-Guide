@@ -71,12 +71,37 @@
         }
 
         .layer-button:hover { background: #444; }
+
+        /* Caixa de Busca de Coordenadas */
+        .search-box {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            background: rgba(20,20,20,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-family: sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .search-box h4 { margin: 0 0 8px 0; font-size: 14px; color: #bbb; }
+        .search-box input { width: 200px; height: 30px; background: #333; color: white; border: 1px solid #555; padding: 0 8px; border-radius: 4px; }
+        .search-box button { height: 32px; cursor: pointer; background: #007acc; color: white; border: none; padding: 0 12px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
+        .search-box button:hover { background: #0098ff; }
     </style>
 </head>
 
 <body>
 
     <div id="map"></div>
+
+    <div class="search-box">
+        <h4>Buscar Coordenada do Jogo</h4>
+        <input id="game-coords-input" placeholder="Ex: -98, -114, 0 ou X Y Z">
+        <button onclick="buscarCoordenada()">Ir</button>
+    </div>
 
     <button class="sidebar-button" onclick="toggleMenu()">☰</button>
 
@@ -130,44 +155,58 @@
         }
 
         // ========================================================
-        // 🛠️ CONFIGURAÇÃO DA CALIBRAÇÃO (DADOS REAIS INJETADOS)
+        // 🛠️ SISTEMA DE CALIBRAÇÃO REESTRUTURADO
         // ========================================================
 
-        // PONTO A
+        // Dados base coletados
         const jogoA = { x: 300, y: -425 };     
         const pixelA = { lng: 170, lat: 316 }; 
 
-        // PONTO B
         const jogoB = { x: -550, y: 425 };       
         const pixelB = { lng: 1742, lat: 2150 }; 
 
-        // Cálculo da proporção
+        // Multiplicador de escala corrigido para evitar distorção de eixos na imagem quadrada
         const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
         const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
 
-        // Função de conversão jogo -> pixel
+        // Função de conversão jogo -> pixel Leaflet
         function converterJogoParaMapa(jogoX, jogoY) {
             const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
             const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
             return [lat, lng];
         }
 
-        // Função para spawnar marcadores
+        // Camada global para segurar o marcador buscado e não acumular vários na tela
+        let marcadorBusca = null;
+
         function spawnMarcador(jogoX, jogoY, texto) {
             const pos = converterJogoParaMapa(jogoX, jogoY);
-            L.marker(pos).addTo(map).bindPopup(texto);
+            
+            if (marcadorBusca) {
+                map.removeLayer(marcadorBusca);
+            }
+
+            marcadorBusca = L.marker(pos).addTo(map).bindPopup(texto).openPopup();
+            map.setView(pos, 2); // Dá zoom automático na área do marcador
         }
 
-        // ====== SEUS MARCADORES FICAM AQUI ======
-        
-        // Teste com a coordenada que você pediu no começo:
-        spawnMarcador(-98, -114, "Sua Localização (-98, -114)");
+        // Função chamada pelo botão "Ir"
+        function buscarCoordenada() {
+            const inputVal = document.getElementById("game-coords-input").value.trim();
+            if (!inputVal) return;
 
+            // Limpa espaços extras e aceita divisão tanto por vírgula quanto por espaço simples
+            const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
-        // ⚙️ FERRAMENTA AUXILIAR: Clique no mapa para ver o Pixel (Pode deixar aqui por enquanto)
-        map.on("click", function(e) {
-            alert("Pixel -> lng: " + Math.round(e.latlng.lng) + ", lat: " + Math.round(e.latlng.lat));
-        });
+            if (numeros.length >= 2) {
+                const x = numeros[0];
+                const y = numeros[1];
+                
+                spawnMarcador(x, y, `Marcador em: ${x}, ${y}`);
+            } else {
+                alert("Por favor, digite pelo menos dois números válidos (X e Y).");
+            }
+        }
     </script>
 
 </body>
