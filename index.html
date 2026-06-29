@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
-        body { margin: 0; }
+        body { margin: 0; background: #111; }
         #map { width: 100vw; height: 100vh; }
 
         /* botão abrir menu */
@@ -131,8 +131,8 @@
             wheelPxPerZoomLevel: 120
         });
 
-        // Novo Mapa base configurado para a sua imagem Background.png
-        const image = "images/Background.png";
+        // Corrigido para carregar "background.png" em minúsculo
+        const image = "images/background.png";
         L.imageOverlay(image, bounds).addTo(map);
 
         // ========================================================
