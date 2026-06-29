@@ -145,11 +145,11 @@
         map.createPane('migrationsPane').style.zIndex = 403;
         map.createPane('patrolPane').style.zIndex = 404;
 
-        // Definição das camadas apontando para seus arquivos
+        // Definição das camadas apontando para seus arquivos (Corrigido para MigrationsZones.png)
         const layers = {
             water: L.imageOverlay("images/watermap.png", bounds, { pane: 'waterPane' }),
             roads: L.imageOverlay("images/roadsmap.png", bounds, { pane: 'roadsPane' }),
-            migrations: L.imageOverlay("images/MigrationZones.png", bounds, { pane: 'migrationsPane' }),
+            migrations: L.imageOverlay("images/MigrationsZones.png", bounds, { pane: 'migrationsPane' }),
             patrol: L.imageOverlay("images/PatrolZones.png", bounds, { pane: 'patrolPane' })
         };
 
@@ -160,7 +160,7 @@
             document.getElementById("menu").classList.toggle("active");
         }
 
-        // Função única e inteligente para ligar/desligar qualquer camada mantendo a ordem
+        // Função única para ligar/desligar as camadas mantendo a pilha organizada
         function toggleLayer(layerName) {
             const targetLayer = layers[layerName];
             if (!targetLayer) return;
@@ -173,7 +173,7 @@
         }
 
         // ========================================================
-        // 🛠️ SISTEMA DE CONVERSÃO CORRIGIDO
+        // 🛠️ SISTEMA DE CONVERSÃO 
         // ========================================================
 
         const jogoA = { y: -425, x: 300 };     
