@@ -99,7 +99,7 @@
 
     <div class="search-box">
         <h4>Buscar Coordenada do Jogo</h4>
-        <input id="game-coords-input" placeholder="Cole aqui: Y, X, Z ou Y X Z">
+        <input id="game-coords-input" placeholder="Cole aqui: Y, X, Z">
         <button onclick="buscarCoordenada()">Ir</button>
     </div>
 
@@ -155,26 +155,26 @@
         }
 
         // ========================================================
-        // 🛠️ SISTEMA DE CALIBRAÇÃO ADAPTADO PARA A ORDEM (Y, X, Z)
+        // 🛠️ CALIBRAÇÃO MANUAL AJUSTADA (ESTILO VULNONA)
         // ========================================================
+        
+        // Multiplicador de escala corrigido para o tamanho do mapa do Evrima
+        // Se notar que o ponto andou demais ou de menos, a gente mexe aqui:
+        const multiplicadorX = -1.85; 
+        const multiplicadorY = -2.15; 
 
-        // Seus pontos base mapeados na ordem nativa do jogo: jogo = { y, x }
-        const jogoA = { y: -425, x: 300 };     
-        const pixelA = { lng: 170, lat: 316 }; 
+        // Ponto central da imagem (2160 / 2 = 1080) mapeado para o centro do mapa (0,0)
+        const centroPixelX = 1080;
+        const centroPixelY = 1080;
 
-        const jogoB = { y: 425, x: -550 };       
-        const pixelB = { lng: 1742, lat: 2150 }; 
-
-        // Escala calculada cruzando os eixos corretos: 
-        // Jogo X (segundo número) mexe no Lng (horizontal) do site
-        // Jogo Y (primeiro número) mexe no Lat (vertical) do site
-        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
-        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
-
-        // Converte recebendo explicitamente Y do jogo e X do jogo
+        // Converte recebendo a ordem exata do jogo: Y, X
         function converterJogoParaMapa(jogoY, jogoX) {
-            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
-            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
+            // No The Isle, o X do jogo mexe na horizontal (Lng)
+            const lng = centroPixelX + (jogoX * multiplicadorX);
+            
+            // O Y do jogo mexe na vertical (Lat)
+            const lat = centroPixelY + (jogoY * multiplicadorY);
+            
             return [lat, lng];
         }
 
@@ -188,7 +188,7 @@
             }
 
             marcadorBusca = L.marker(pos).addTo(map).bindPopup(texto).openPopup();
-            map.setView(pos, 2); // Centraliza e dá zoom na área buscada
+            map.setView(pos, 2); 
         }
 
         // Função chamada pelo botão "Ir"
@@ -199,14 +199,14 @@
             // Limpa vírgulas e separa por espaços
             const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
-            // Checa se o usuário colou pelo menos o Y e o X
+            // Lê na ordem exata que você usa: Y, X, Z
             if (numeros.length >= 2) {
-                const jogoY = numeros[0]; // Primeiro número inserido no jogo é o Y
-                const jogoX = numeros[1]; // Segundo número inserido no jogo é o X
+                const jogoY = numeros[0]; // Primeiro número é o Y
+                const jogoX = numeros[1]; // Segundo número é o X
                 
                 spawnMarcador(jogoY, jogoX, `Localização encontrada!<br><b>Y:</b> ${jogoY}<br><b>X:</b> ${jogoX}`);
             } else {
-                alert("Cole a coordenada inteira obtida no jogo (Exemplo: 13.85, 73.23, 35.96)");
+                alert("Cole a coordenada inteira (Exemplo: -98, -114, 0)");
             }
         }
     </script>
