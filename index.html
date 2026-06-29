@@ -131,22 +131,20 @@
             wheelPxPerZoomLevel: 120
         });
 
-        // Mapa base (Sempre no fundo de tudo)
-        const image = "images/gatewaymapHT.png";
+        // Novo Mapa base configurado para a sua imagem Background.png
+        const image = "images/Background.png";
         L.imageOverlay(image, bounds).addTo(map);
 
         // ========================================================
         // 🧱 GERENCIAMENTO DE CAMADAS E ORDEM VISUAL (Z-INDEX)
         // ========================================================
 
-        // Criamos painéis customizados para fixar a ordem exata de renderização na tela
         map.createPane('waterPane').style.zIndex = 401;
         map.createPane('roadsPane').style.zIndex = 402;
         map.createPane('migrationsPane').style.zIndex = 403;
         map.createPane('patrolPane').style.zIndex = 404;
         map.createPane('locationsPane').style.zIndex = 405;
 
-        // Definição das camadas apontando para seus arquivos na pasta images
         const layers = {
             water: L.imageOverlay("images/watermap.png", bounds, { pane: 'waterPane' }),
             roads: L.imageOverlay("images/Roads.png", bounds, { pane: 'roadsPane' }),
@@ -157,12 +155,10 @@
 
         map.fitBounds(bounds);
 
-        // Abrir/Fechar menu lateral
         function toggleMenu(){
             document.getElementById("menu").classList.toggle("active");
         }
 
-        // Função única para ligar/desligar as camadas mantendo a pilha organizada
         function toggleLayer(layerName) {
             const targetLayer = layers[layerName];
             if (!targetLayer) return;
