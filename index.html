@@ -54,7 +54,7 @@
             transform: translateY(-50%) translateX(0);
         }
 
-        /* botões */
+        /* botões do menu */
         .layer-button {
             width: 100%;
             height: 45px;
@@ -72,7 +72,7 @@
 
         .layer-button:hover { background: #444; }
 
-        /* Caixa de Busca de Coordenadas */
+        /* Caixa de Busca de Coordenadas (Estilo Vulnona) */
         .search-box {
             position: absolute;
             left: 20px;
@@ -99,7 +99,7 @@
 
     <div class="search-box">
         <h4>Buscar Coordenada do Jogo</h4>
-        <input id="game-coords-input" placeholder="Ex: -98, -114, 0 ou X Y Z">
+        <input id="game-coords-input" placeholder="Cole aqui: Y, X, Z ou Y X Z">
         <button onclick="buscarCoordenada()">Ir</button>
     </div>
 
@@ -118,7 +118,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-<script>
         const bounds = [[0, 0], [2160, 2160]];
 
         const map = L.map('map', {
@@ -132,21 +131,21 @@
             wheelPxPerZoomLevel: 120
         });
 
-        // mapa base
+        // Mapa base
         const image = "images/gatewaymapHT.png";
         L.imageOverlay(image, bounds).addTo(map);
 
-        // camada agua (começa desligada)
+        // Camada de água (inicia desativada)
         const waterLayer = L.imageOverlay("images/watermap.png", bounds);
 
         map.fitBounds(bounds);
 
-        // abrir menu
+        // Abrir/Fechar menu lateral
         function toggleMenu(){
             document.getElementById("menu").classList.toggle("active");
         }
 
-        // liga/desliga agua
+        // Liga/Desliga camada de água
         function toggleWater(){
             if(map.hasLayer(waterLayer)){
                 map.removeLayer(waterLayer);
@@ -166,7 +165,7 @@
         const jogoB = { y: 425, x: -550 };       
         const pixelB = { lng: 1742, lat: 2150 }; 
 
-        // Escala calculada cruzando os eixos certos: 
+        // Escala calculada cruzando os eixos corretos: 
         // Jogo X (segundo número) mexe no Lng (horizontal) do site
         // Jogo Y (primeiro número) mexe no Lat (vertical) do site
         const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
@@ -189,7 +188,7 @@
             }
 
             marcadorBusca = L.marker(pos).addTo(map).bindPopup(texto).openPopup();
-            map.setView(pos, 2); 
+            map.setView(pos, 2); // Centraliza e dá zoom na área buscada
         }
 
         // Função chamada pelo botão "Ir"
@@ -202,66 +201,12 @@
 
             // Checa se o usuário colou pelo menos o Y e o X
             if (numeros.length >= 2) {
-                const jogoY = numeros[0]; // Primeiro número do jogo é Y
-                const jogoX = numeros[1]; // Segundo número do jogo é X
+                const jogoY = numeros[0]; // Primeiro número inserido no jogo é o Y
+                const jogoX = numeros[1]; // Segundo número inserido no jogo é o X
                 
-                spawnMarcador(jogoY, jogoX, `Localização: Y: ${jogoY} | X: ${jogoX}`);
+                spawnMarcador(jogoY, jogoX, `Localização encontrada!<br><b>Y:</b> ${jogoY}<br><b>X:</b> ${jogoX}`);
             } else {
-                alert("Cole a coordenada completa do jogo (Ex: 13.85, 73.23, 35.96)");
-            }
-        }
-    </script>
-        // ========================================================
-        // 🛠️ SISTEMA DE CALIBRAÇÃO REESTRUTURADO
-        // ========================================================
-
-        // Dados base coletados
-        const jogoA = { x: 300, y: -425 };     
-        const pixelA = { lng: 170, lat: 316 }; 
-
-        const jogoB = { x: -550, y: 425 };       
-        const pixelB = { lng: 1742, lat: 2150 }; 
-
-        // Multiplicador de escala corrigido para evitar distorção de eixos na imagem quadrada
-        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
-        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
-
-        // Função de conversão jogo -> pixel Leaflet
-        function converterJogoParaMapa(jogoX, jogoY) {
-            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
-            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
-            return [lat, lng];
-        }
-
-        // Camada global para segurar o marcador buscado e não acumular vários na tela
-        let marcadorBusca = null;
-
-        function spawnMarcador(jogoX, jogoY, texto) {
-            const pos = converterJogoParaMapa(jogoX, jogoY);
-            
-            if (marcadorBusca) {
-                map.removeLayer(marcadorBusca);
-            }
-
-            marcadorBusca = L.marker(pos).addTo(map).bindPopup(texto).openPopup();
-            map.setView(pos, 2); // Dá zoom automático na área do marcador
-        }
-
-        // Função chamada pelo botão "Ir"
-        function buscarCoordenada() {
-            const inputVal = document.getElementById("game-coords-input").value.trim();
-            if (!inputVal) return;
-
-            // Limpa espaços extras e aceita divisão tanto por vírgula quanto por espaço simples
-            const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
-
-            if (numeros.length >= 2) {
-                const x = numeros[0];
-                const y = numeros[1];
-                
-                spawnMarcador(x, y, `Marcador em: ${x}, ${y}`);
-            } else {
-                alert("Por favor, digite pelo menos dois números válidos (X e Y).");
+                alert("Cole a coordenada inteira obtida no jogo (Exemplo: 13.85, 73.23, 35.96)");
             }
         }
     </script>
