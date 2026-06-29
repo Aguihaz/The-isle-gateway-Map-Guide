@@ -248,37 +248,6 @@ body {
 
 <div id="map"></div>
     
-<div id="calibration" style="
-position:absolute;
-bottom:20px;
-right:20px;
-z-index:1000;
-background:#222;
-padding:10px;
-border-radius:10px;
-color:white;
-font-family:Arial;
-">
-
-Pixel:
-<span id="pixel">-</span>
-
-<br><br>
-
-Game X:
-<input id="gameX" type="number">
-
-<br><br>
-
-Game Y:
-<input id="gameY" type="number">
-
-<br><br>
-
-<button onclick="savePoint()">
-Salvar ponto
-</button>
-
 </div>
     
 <div class="coords-box">
@@ -494,25 +463,6 @@ map.on("click", function(e){
         Math.round(e.latlng.lat);
 
 });
-
-function savePoint(){
-
-    const pixel = document
-        .getElementById("pixel")
-        .innerText
-        .split(",");
-
-    calibrationPoints.push({
-
-        pixelX: Number(pixel[0]),
-        pixelY: Number(pixel[1]),
-
-        gameX: Number(document.getElementById("gameX").value),
-        gameY: Number(document.getElementById("gameY").value)
-
-    });
-
-    console.log(calibrationPoints);
 
 }
 </script>
