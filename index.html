@@ -9,7 +9,15 @@
 
     <style>
         body { margin: 0; background: #111; }
-        #map { width: 100vw; height: 100vh; }
+        
+        /* Aqui colocamos a sua imagem background.png cobrindo todo o fundo da tela, por baixo do mapa */
+        #map { 
+            width: 100vw; 
+            height: 100vh; 
+            background-image: url('images/background.png');
+            background-size: cover;
+            background-position: center;
+        }
 
         /* botão abrir menu */
         .sidebar-button {
@@ -131,8 +139,8 @@
             wheelPxPerZoomLevel: 120
         });
 
-        // Corrigido para carregar "background.png" em minúsculo
-        const image = "images/background.png";
+        // O mapa base voltou a ser o seu gatewaymapHT.png original!
+        const image = "images/gatewaymapHT.png";
         L.imageOverlay(image, bounds).addTo(map);
 
         // ========================================================
