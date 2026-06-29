@@ -247,6 +247,38 @@ body {
 
 
 <div id="map"></div>
+    <div id="calibration" style="
+position:absolute;
+bottom:20px;
+right:20px;
+z-index:1000;
+background:#222;
+padding:10px;
+border-radius:10px;
+color:white;
+font-family:Arial;
+">
+
+Pixel:
+<span id="pixel">-</span>
+
+<br><br>
+
+Game X:
+<input id="gameX" type="number">
+
+<br><br>
+
+Game Y:
+<input id="gameY" type="number">
+
+<br><br>
+
+<button onclick="savePoint()">
+Salvar ponto
+</button>
+
+</div>
     
 <div class="coords-box">
 
@@ -450,64 +482,38 @@ function toggleWater(){
 let marker;
 
 
-function goCoords(){
-
-
-    let value = document.getElementById("coords").value;
-
-
-    let parts = value.split(",");
-
-
-    let x = Number(parts[0]);
-
-    let y = Number(parts[1]);
-
-
-
-    // limites do mundo Gateway (vamos ajustar depois)
-
-    let minX = -1000;
-    let maxX = 1000;
-
-
-    let minY = -1000;
-    let maxY = 1000;
-    
-
-    // tamanho da imagem
-
-    let imageWidth = 2160;
-    let imageHeight = 2160;
-
-
-
-    let mapX = ((x - minX) / (maxX - minX)) * imageWidth;
-
-
-    let mapY = ((maxY - y) / (maxY - minY)) * imageHeight;
-
-
-
-    if(marker){
-
-        map.removeLayer(marker);
-
-    }
-
-
-
-    marker = L.marker([mapY,mapX]).addTo(map);
-
-
-
-    map.setView([mapY,mapX], 2);
-
-
-
 }
 
+let calibrationPoints = [];
 
+map.on("click", function(e){
+
+    document.getElementById("pixel").innerText =
+        Math.round(e.latlng.lng) + "," +
+        Math.round(e.latlng.lat);
+
+});
+
+function savePoint(){
+
+    const pixel = document
+        .getElementById("pixel")
+        .innerText
+        .split(",");
+
+    calibrationPoints.push({
+
+        pixelX: Number(pixel[0]),
+        pixelY: Number(pixel[1]),
+
+        gameX: Number(document.getElementById("gameX").value),
+        gameY: Number(document.getElementById("gameY").value)
+
+    });
+
+    console.log(calibrationPoints);
+
+}
 </script>
 
 
