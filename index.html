@@ -1,474 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-<title>Gateway Map</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
-
-<style>
-
-body {
-    margin: 0;
-}
-
-
-#map {
-    width: 100vw;
-    height: 100vh;
-}
-
-
-/* botão abrir menu */
-
-.sidebar-button {
-
-    position: absolute;
-
-    left: 10px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-
-    width: 45px;
-    height: 45px;
-
-
-    background: #222;
-
-    color: white;
-
-
-    border-radius: 8px;
-
-
-    cursor: pointer;
-
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-
-    font-size: 24px;
-
-
-    z-index: 1000;
-
-}
-
-
-
-/* painel */
-
-.sidebar {
-
-
-    position: absolute;
-
-
-    left: 65px;
-
-    top: 50%;
-
-
-    transform: translateY(-50%) translateX(-30px);
-
-
-
-    width: 260px;
-
-    height: 50vh;
-
-
-
-    background: rgba(20,20,20,0.92);
-
-
-    backdrop-filter: blur(8px);
-
-
-
-    border-radius: 12px;
-
-
-
-    padding: 15px;
-
-
-
-    z-index: 999;
-
-
-
-    opacity: 0;
-
-    pointer-events: none;
-
-
-
-    transition:
-
-    opacity 0.25s ease,
-
-    transform 0.25s ease;
-
-}
-
-
-.sidebar.active {
-
-    opacity: 1;
-
-    pointer-events: auto;
-
-    transform: translateY(-50%) translateX(0);
-
-}
-
-
-
-/* botões */
-
-.layer-button {
-
-
-    width: 100%;
-
-    height: 45px;
-
-
-
-    margin-bottom: 10px;
-
-
-
-    background: #333;
-
-
-
-    border-radius: 8px;
-
-
-
-    color: white;
-
-
-
-    border: none;
-
-
-
-    display: flex;
-
-
-
-    align-items: center;
-
-
-
-    gap: 12px;
-
-
-
-    cursor: pointer;
-
-
-
-    font-size: 16px;
-
-}
-
-
-
-.layer-button:hover {
-
-    background: #444;
-
-}
-
-.coords-box {
-
-    position: absolute;
-
-    left: 20px;
-    bottom: 20px;
-
-    z-index: 1000;
-
-
-    background: rgba(20,20,20,0.9);
-
-    padding: 15px;
-
-    border-radius: 10px;
-
-    color:white;
-
-}
-
-
-.coords-box input {
-
-    width: 220px;
-
-    height: 30px;
-
-}
-
-
-.coords-box button {
-
-    height: 35px;
-
-    cursor:pointer;
-
-}
-
-</style>
-
-
+    <meta charset="UTF-8">
+    <title>Gateway Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <style>
+        body { margin: 0; }
+        #map { width: 100vw; height: 100vh; }
+
+        /* botão abrir menu */
+        .sidebar-button {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: #222;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        /* painel */
+        .sidebar {
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-30px);
+            width: 260px;
+            height: 50vh;
+            background: rgba(20,20,20,0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .sidebar.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        /* botões */
+        .layer-button {
+            width: 100%;
+            height: 45px;
+            margin-bottom: 10px;
+            background: #333;
+            border-radius: 8px;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .layer-button:hover { background: #444; }
+
+        .coords-box {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            background: rgba(20,20,20,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .coords-box input { width: 220px; height: 30px; background: #333; color: white; border: 1px solid #555; padding: 0 5px; }
+        .coords-box button { height: 35px; cursor: pointer; background: #555; color: white; border: none; padding: 0 10px; }
+    </style>
 </head>
-
-
 
 <body>
 
-
-
-<div id="map"></div>
-    
-</div>
-    
-<div class="coords-box">
-
-<input id="coords" placeholder="X,Y,Z">
-
-<button onclick="goCoords()">
-GO
-</button>
-
-</div>
-
-
-
-<button class="sidebar-button" onclick="toggleMenu()">
-
-☰
-
-</button>
-
-
-
-
-<div class="sidebar" id="menu">
-
-
-
-<button class="layer-button" onclick="toggleWater()">
-
-💧 Water
-
-</button>
-
-
-
-<button class="layer-button">
-
-🛣️ Roads
-
-</button>
-
-
-
-<button class="layer-button">
-
-🕳️ Caves
-
-</button>
-
-
-
-<button class="layer-button">
-
-🍖 Food
-
-</button>
-
-
-
-<button class="layer-button">
-
-📍 Locations
-
-</button>
-
-
-
-<button class="layer-button">
-
-🟢 Migration Zones
-
-</button>
-
-
-
-<button class="layer-button">
-
-🔴 Patrol Zones
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
-
-
-<script>
-
-
-const bounds = [[0,0], [2160,2160]];
-
-
-
-const map = L.map('map', {
-
-    crs: L.CRS.Simple,
-
-
-    minZoom: -1.5,
-
-    maxZoom: 4,
-
-
-    maxBounds: bounds,
-
-    maxBoundsViscosity: 1.0,
-
-
-    zoomAnimation: true,
-
-    zoomSnap: 0.25,
-
-    wheelPxPerZoomLevel: 120
-
-});
-
-
-
-
-
-// mapa base
-
-const image = "images/gatewaymapHT.png";
-
-
-L.imageOverlay(image, bounds).addTo(map);
-
-
-
-
-
-// camada agua (começa desligada)
-
-const waterLayer = L.imageOverlay(
-
-    "images/watermap.png",
-
-    bounds
-
-);
-
-
-
-
-
-map.fitBounds(bounds);
-
-
-
-
-
-// abrir menu
-
-function toggleMenu(){
-
-
-    document
-
-    .getElementById("menu")
-
-    .classList
-
-    .toggle("active");
-
-
-}
-
-
-
-
-// liga/desliga agua
-
-function toggleWater(){
-
-
-    if(map.hasLayer(waterLayer)){
-
-
-        map.removeLayer(waterLayer);
-
-
-    } else {
-
-
-        waterLayer.addTo(map);
-
-
-    }
-
-
-}
-
-let marker;
-
-
-}
-
-let calibrationPoints = [];
-
-map.on("click", function(e){
-
-    document.getElementById("pixel").innerText =
-        Math.round(e.latlng.lng) + "," +
-        Math.round(e.latlng.lat);
-
-});
-
-}
-</script>
-
-
+    <div id="map"></div>
+        
+    <div class="coords-box">
+        <div style="margin-bottom: 5px;">Clicado em: <span id="pixel">0,0</span></div>
+        <input id="coords" placeholder="X,Y (Ex: 1000,1000)">
+        <button onclick="goCoords()">GO</button>
+    </div>
+
+    <button class="sidebar-button" onclick="toggleMenu()">☰</button>
+
+    <div class="sidebar" id="menu">
+        <button class="layer-button" onclick="toggleWater()">💧 Water</button>
+        <button class="layer-button">🛣️ Roads</button>
+        <button class="layer-button">🕳️ Caves</button>
+        <button class="layer-button">🍖 Food</button>
+        <button class="layer-button">📍 Locations</button>
+        <button class="layer-button">🟢 Migration Zones</button>
+        <button class="layer-button">🔴 Patrol Zones</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const bounds = [[0, 0], [2160, 2160]];
+
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -1.5,
+            maxZoom: 4,
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0,
+            zoomAnimation: true,
+            zoomSnap: 0.25,
+            wheelPxPerZoomLevel: 120
+        });
+
+        // mapa base
+        const image = "images/gatewaymapHT.png";
+        L.imageOverlay(image, bounds).addTo(map);
+
+        // camada agua (começa desligada)
+        const waterLayer = L.imageOverlay("images/watermap.png", bounds);
+
+        map.fitBounds(bounds);
+
+        // abrir menu
+        function toggleMenu(){
+            document.getElementById("menu").classList.toggle("active");
+        }
+
+        // liga/desliga agua
+        function toggleWater(){
+            if(map.hasLayer(waterLayer)){
+                map.removeLayer(waterLayer);
+            } else {
+                waterLayer.addTo(map);
+            }
+        }
+    </script>
 
 </body>
-
 </html>
