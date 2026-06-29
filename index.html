@@ -5,7 +5,7 @@
     <title>Gateway Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link class="sheet" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
         body { margin: 0; }
@@ -71,32 +71,12 @@
         }
 
         .layer-button:hover { background: #444; }
-
-        .coords-box {
-            position: absolute;
-            left: 20px;
-            bottom: 20px;
-            z-index: 1000;
-            background: rgba(20,20,20,0.9);
-            padding: 15px;
-            border-radius: 10px;
-            color: white;
-        }
-
-        .coords-box input { width: 220px; height: 30px; background: #333; color: white; border: 1px solid #555; padding: 0 5px; }
-        .coords-box button { height: 35px; cursor: pointer; background: #555; color: white; border: none; padding: 0 10px; }
     </style>
 </head>
 
 <body>
 
     <div id="map"></div>
-        
-    <div class="coords-box">
-        <div style="margin-bottom: 5px;">Clicado em: <span id="pixel">0,0</span></div>
-        <input id="coords" placeholder="X,Y (Ex: 1000,1000)">
-        <button onclick="goCoords()">GO</button>
-    </div>
 
     <button class="sidebar-button" onclick="toggleMenu()">☰</button>
 
