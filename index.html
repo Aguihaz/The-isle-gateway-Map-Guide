@@ -118,6 +118,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+<script>
         const bounds = [[0, 0], [2160, 2160]];
 
         const map = L.map('map', {
@@ -154,6 +155,62 @@
             }
         }
 
+        // ========================================================
+        // 🛠️ SISTEMA DE CALIBRAÇÃO ADAPTADO PARA A ORDEM (Y, X, Z)
+        // ========================================================
+
+        // Seus pontos base mapeados na ordem nativa do jogo: jogo = { y, x }
+        const jogoA = { y: -425, x: 300 };     
+        const pixelA = { lng: 170, lat: 316 }; 
+
+        const jogoB = { y: 425, x: -550 };       
+        const pixelB = { lng: 1742, lat: 2150 }; 
+
+        // Escala calculada cruzando os eixos certos: 
+        // Jogo X (segundo número) mexe no Lng (horizontal) do site
+        // Jogo Y (primeiro número) mexe no Lat (vertical) do site
+        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
+        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
+
+        // Converte recebendo explicitamente Y do jogo e X do jogo
+        function converterJogoParaMapa(jogoY, jogoX) {
+            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
+            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
+            return [lat, lng];
+        }
+
+        let marcadorBusca = null;
+
+        function spawnMarcador(jogoY, jogoX, texto) {
+            const pos = converterJogoParaMapa(jogoY, jogoX);
+            
+            if (marcadorBusca) {
+                map.removeLayer(marcadorBusca);
+            }
+
+            marcadorBusca = L.marker(pos).addTo(map).bindPopup(texto).openPopup();
+            map.setView(pos, 2); 
+        }
+
+        // Função chamada pelo botão "Ir"
+        function buscarCoordenada() {
+            const inputVal = document.getElementById("game-coords-input").value.trim();
+            if (!inputVal) return;
+
+            // Limpa vírgulas e separa por espaços
+            const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
+
+            // Checa se o usuário colou pelo menos o Y e o X
+            if (numeros.length >= 2) {
+                const jogoY = numeros[0]; // Primeiro número do jogo é Y
+                const jogoX = numeros[1]; // Segundo número do jogo é X
+                
+                spawnMarcador(jogoY, jogoX, `Localização: Y: ${jogoY} | X: ${jogoX}`);
+            } else {
+                alert("Cole a coordenada completa do jogo (Ex: 13.85, 73.23, 35.96)");
+            }
+        }
+    </script>
         // ========================================================
         // 🛠️ SISTEMA DE CALIBRAÇÃO REESTRUTURADO
         // ========================================================
