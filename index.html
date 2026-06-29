@@ -130,38 +130,41 @@
         }
 
         // ========================================================
-        // 🛠️ CONFIGURAÇÃO DA CALIBRAÇÃO (DAQUI PRA BAIXO)
+        // 🛠️ CONFIGURAÇÃO DA CALIBRAÇÃO (DADOS REAIS INJETADOS)
         // ========================================================
 
-        // PASSO 1: Troque estes valores de exemplo pelos seus dados reais do jogo!
-        const jogoA = { x: -2000, y: -2000 };     // Coordenada no jogo (Ponto 1)
-        const pixelA = { lng: 100, lat: 100 };    // Pixel no mapa (Ponto 1)
+        // PONTO A
+        const jogoA = { x: 300, y: -425 };     
+        const pixelA = { lng: 170, lat: 316 }; 
 
-        const jogoB = { x: 2000, y: 2000 };       // Coordenada no jogo (Ponto 2)
-        const pixelB = { lng: 2000, lat: 2000 };  // Pixel no mapa (Ponto 2)
+        // PONTO B
+        const jogoB = { x: -550, y: 425 };       
+        const pixelB = { lng: 1742, lat: 2150 }; 
 
         // Cálculo da proporção
         const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
         const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
 
-        // Função mágica de conversão
+        // Função de conversão jogo -> pixel
         function converterJogoParaMapa(jogoX, jogoY) {
             const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
             const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
             return [lat, lng];
         }
 
-        // Função para criar o marcador usando dados do jogo
+        // Função para spawnar marcadores
         function spawnMarcador(jogoX, jogoY, texto) {
             const pos = converterJogoParaMapa(jogoX, jogoY);
             L.marker(pos).addTo(map).bindPopup(texto);
         }
 
-        // PASSO 3: Adicione seus marcadores aqui
-        // Exemplo: spawnMarcador(-98, -114, "Minha Localização");
+        // ====== SEUS MARCADORES FICAM AQUI ======
+        
+        // Teste com a coordenada que você pediu no começo:
+        spawnMarcador(-98, -114, "Sua Localização (-98, -114)");
 
 
-        // ⚙️ FERRAMENTA AUXILIAR: Clique no mapa para ver o Pixel
+        // ⚙️ FERRAMENTA AUXILIAR: Clique no mapa para ver o Pixel (Pode deixar aqui por enquanto)
         map.on("click", function(e) {
             alert("Pixel -> lng: " + Math.round(e.latlng.lng) + ", lat: " + Math.round(e.latlng.lat));
         });
