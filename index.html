@@ -155,25 +155,24 @@
         }
 
         // ========================================================
-        // 🛠️ CALIBRAÇÃO MANUAL AJUSTADA (ESTILO VULNONA)
+        // 🛠️ SISTEMA DE CONVERSÃO CORRIGIDO
         // ========================================================
-        
-        // Multiplicador de escala corrigido para o tamanho do mapa do Evrima
-        // Se notar que o ponto andou demais ou de menos, a gente mexe aqui:
-        const multiplicadorX = -1.85; 
-        const multiplicadorY = -2.15; 
 
-        // Ponto central da imagem (2160 / 2 = 1080) mapeado para o centro do mapa (0,0)
-        const centroPixelX = 1080;
-        const centroPixelY = 1080;
+        // Seus pontos base de calibração reais (Ordem: Y, X)
+        const jogoA = { y: -425, x: 300 };     
+        const pixelA = { lng: 170, lat: 316 }; 
 
-        // Converte recebendo a ordem exata do jogo: Y, X
+        const jogoB = { y: 425, x: -550 };       
+        const pixelB = { lng: 1742, lat: 2150 }; 
+
+        // Taxa de conversão precisa baseada na distância real dos seus pontos
+        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
+        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
+
         function converterJogoParaMapa(jogoY, jogoX) {
-            // No The Isle, o X do jogo mexe na horizontal (Lng)
-            const lng = centroPixelX + (jogoX * multiplicadorX);
-            
-            // O Y do jogo mexe na vertical (Lat)
-            const lat = centroPixelY + (jogoY * multiplicadorY);
+            // Calcula a distância exata a partir do Ponto A conhecido
+            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
+            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
             
             return [lat, lng];
         }
@@ -199,10 +198,10 @@
             // Limpa vírgulas e separa por espaços
             const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
-            // Lê na ordem exata que você usa: Y, X, Z
+            // Lê estritamente na ordem padrão copiada do jogo: Y, X, Z
             if (numeros.length >= 2) {
-                const jogoY = numeros[0]; // Primeiro número é o Y
-                const jogoX = numeros[1]; // Segundo número é o X
+                const jogoY = numeros[0]; // Primeiro número é Y
+                const jogoX = numeros[1]; // Segundo número é X
                 
                 spawnMarcador(jogoY, jogoX, `Localização encontrada!<br><b>Y:</b> ${jogoY}<br><b>X:</b> ${jogoX}`);
             } else {
