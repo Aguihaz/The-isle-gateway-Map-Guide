@@ -168,6 +168,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // Tamanho do plano de pixels do Leaflet
         const bounds = [[0, 0], [2160, 2160]];
 
         const map = L.map('map', {
@@ -220,21 +221,28 @@
         }
 
         // ========================================================
-        // 🛠️ SISTEMA DE CONVERSÃO 
+        // 🛠️ NOVO SISTEMA DE CONVERSÃO BASEADO EM LIMITES (ESTILO VULNONA)
         // ========================================================
 
-        const jogoA = { y: -425, x: 300 };     
-        const pixelA = { lng: 170, lat: 316 }; 
-
-        const jogoB = { y: 425, x: -550 };       
-        const pixelB = { lng: 1742, lat: 2150 }; 
-
-        const escalaX = (pixelB.lng - pixelA.lng) / (jogoB.x - jogoA.x);
-        const escalaY = (pixelB.lat - pixelA.lat) / (jogoB.y - jogoA.y);
+        // Altere esses limites chutando os valores do jogo até bater certinho com o mapa!
+        const LIMITES_JOGO = {
+            minX: -1000, // Limite oeste (esquerda) do jogo
+            maxX: 1000,  // Limite leste (direita) do jogo
+            minY: -1000, // Limite sul (geralmente baixo) do jogo
+            maxY: 1000   // Limite norte (geralmente cima) do jogo
+        };
 
         function converterJogoParaMapa(jogoY, jogoX) {
-            const lng = pixelA.lng + (jogoX - jogoA.x) * escalaX;
-            const lat = pixelA.lat + (jogoY - jogoA.y) * escalaY;
+            // Calcula a porcentagem de onde o ponto está no mapa do jogo (de 0 a 1)
+            const pctX = (jogoX - LIMITES_JOGO.minX) / (LIMITES_JOGO.maxX - LIMITES_JOGO.minX);
+            const pctY = (jogoY - LIMITES_JOGO.minY) / (LIMITES_JOGO.maxY - LIMITES_JOGO.minY);
+
+            // Mapeia essa porcentagem direto nos limites de pixels (0 a 2160)
+            const lng = bounds[0][1] + pctX * (bounds[1][1] - bounds[0][1]);
+            
+            // Inversão do eixo Y clássica de motores de jogos para planos cartesianos simples
+            const lat = bounds[1][0] - pctY * (bounds[1][0] - bounds[0][0]);
+
             return [lat, lng];
         }
 
@@ -255,8 +263,10 @@
             const inputVal = document.getElementById("game-coords-input").value.trim();
             if (!inputVal) return;
 
+            // Divide a string por espaços ou vírgulas
             const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
+            // Lê na ordem padrão colada: Y, X, Z (onde o Z será ignorado)
             if (numeros.length >= 2) {
                 const jogoY = numeros[0]; 
                 const jogoX = numeros[1]; 
