@@ -168,7 +168,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // Tamanho do plano de pixels do Leaflet
         const bounds = [[0, 0], [2160, 2160]];
 
         const map = L.map('map', {
@@ -220,27 +219,28 @@
             }
         }
 
-// ========================================================
-        // 🛠️ SISTEMA DE PROPORÇÃO DIRETAL (ILHA CENTRALIZADA)
+        // ========================================================
+        // 🛠️ MOTOR DE ESCALA INDEPENDENTE (EIXOS X E Y SEPARADOS)
         // ========================================================
 
-        // Esse número representa o "tamanho" que o oceano + ilha ocupam na coordenada do jogo.
-        // Se o marcador estiver correndo muito rápido para as bordas, AUMENTE este número (ex: 1500).
-        // Se o marcador estiver se movendo muito pouco (ficando preso perto do centro), DIMINUA este número (ex: 900).
-        const RAIO_DO_MAPA_JOGO = 1100; 
+        // Modifique esses dois valores abaixo para calibrar o alcance de cada eixo!
+        // Aumentar o número faz o marcador ir MAIS PERTO DO CENTRO.
+        // Diminuir o número faz o marcador ir MAIS PARA A BORDA.
+        const AJUSTE_X = 600; 
+        const AJUSTE_Y = 700; 
 
         function converterJogoParaMapa(jogoY, jogoX) {
-            // Centro do canvas do Leaflet (metade de 2160 é 1080)
-            const centroPixel = 1080;
+            const centroPixel = 1080; // Metade de 2160
             
-            // Calcula quantos pixels vale cada unidade do jogo
-            const pixelsPorUnidade = 1080 / RAIO_DO_MAPA_JOGO;
+            // Taxa de pixels por unidade para cada eixo isolado
+            const escalaX = centroPixel / AJUSTE_X;
+            const escalaY = centroPixel / AJUSTE_Y;
 
-            // Mapeia o X (Longitude - Horizontal)
-            const lng = centroPixel + (jogoX * pixelsPorUnidade);
+            // X corre na horizontal normalmente
+            const lng = centroPixel + (jogoX * escalaX);
             
-            // Mapeia o Y (Latitude - Vertical) de forma direta em relação ao centro
-            const lat = centroPixel - (jogoY * pixelsPorUnidade);
+            // Y corre na vertical invertido (Padrão Leaflet)
+            const lat = centroPixel - (jogoY * escalaY);
 
             return [lat, lng];
         }
@@ -262,10 +262,8 @@
             const inputVal = document.getElementById("game-coords-input").value.trim();
             if (!inputVal) return;
 
-            // Divide a string por espaços ou vírgulas
             const numeros = inputVal.replace(/,/g, ' ').split(/\s+/).map(Number).filter(n => !isNaN(n));
 
-            // Lê na ordem padrão colada: Y, X, Z (onde o Z será ignorado)
             if (numeros.length >= 2) {
                 const jogoY = numeros[0]; 
                 const jogoX = numeros[1]; 
