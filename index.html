@@ -220,27 +220,30 @@
         }
 
         // ========================================================
-        // 🛠️ MOTOR DE ESCALA INDEPENDENTE (EIXOS X E Y SEPARADOS)
+        // 🛠️ MOTOR RECALIBRADO COM CENTRO DESLOCADO (976x976)
         // ========================================================
 
-        // Modifique esses dois valores abaixo para calibrar o alcance de cada eixo!
-        // Aumentar o número faz o marcador ir MAIS PERTO DO CENTRO.
-        // Diminuir o número faz o marcador ir MAIS PARA A BORDA.
-        const AJUSTE_X = 450; 
-        const AJUSTE_Y = 400; 
+        // A posição real do 0,0,0 do jogo em pixels dentro do seu mapa de 2160x2160
+        const CENTRO_JOGO_PIXEL_X = 976;
+        const CENTRO_JOGO_PIXEL_Y = 976;
+
+        // Modifique esses dois valores abaixo para calibrar a escala (velocidade do marcador)!
+        // Se o marcador correr muito rápido para as bordas em um eixo, AUMENTE o número dele.
+        // Se o marcador ficar muito tímido e perto do centro, DIMINUA o número dele.
+        const ESCALA_DIVISOR_X = 1100; 
+        const ESCALA_DIVISOR_Y = 1100; 
 
         function converterJogoParaMapa(jogoY, jogoX) {
-            const centroPixel = 1080; // Metade de 2160
-            
-            // Taxa de pixels por unidade para cada eixo isolado
-            const escalaX = centroPixel / AJUSTE_X;
-            const escalaY = centroPixel / AJUSTE_Y;
+            // Define quantos pixels vale 1 unidade do jogo com base na distância até a borda
+            const pixelsPorUnidadeX = CENTRO_JOGO_PIXEL_X / ESCALA_DIVISOR_X;
+            const pixelsPorUnidadeY = CENTRO_JOGO_PIXEL_Y / ESCALA_DIVISOR_Y;
 
-            // X corre na horizontal normalmente
-            const lng = centroPixel + (jogoX * escalaX);
+            // Calcula a posição X (Horizontal) partindo do novo centro 976
+            const lng = CENTRO_JOGO_PIXEL_X + (jogoX * pixelsPorUnidadeX);
             
-            // Y corre na vertical invertido (Padrão Leaflet)
-            const lat = centroPixel - (jogoY * escalaY);
+            // Calcula a posição Y (Vertical) invertendo o eixo a partir do novo centro 976
+            // (No Leaflet, pixels sobem de baixo para cima na conta de latitude simples)
+            const lat = CENTRO_JOGO_PIXEL_Y - (jogoY * pixelsPorUnidadeY);
 
             return [lat, lng];
         }
