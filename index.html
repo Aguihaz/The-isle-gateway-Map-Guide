@@ -219,31 +219,33 @@
             }
         }
 
-        // ========================================================
-        // 🛠️ MOTOR RECALIBRADO COM CENTRO DESLOCADO (976x976)
+// ========================================================
+        // 🛠️ MOTOR COM MULTIPLICADOR DE EXTREMOS ISOLADO
         // ========================================================
 
-        // A posição real do 0,0,0 do jogo em pixels dentro do seu mapa de 2160x2160
         const CENTRO_JOGO_PIXEL_X = 976;
         const CENTRO_JOGO_PIXEL_Y = 976;
 
-        // Modifique esses dois valores abaixo para calibrar a escala (velocidade do marcador)!
-        // Se o marcador correr muito rápido para as bordas em um eixo, AUMENTE o número dele.
-        // Se o marcador ficar muito tímido e perto do centro, DIMINUA o número dele.
+        // Se o marcador estiver indo MUITO LONGE nos extremos (como o 240, -176),
+        // AUMENTE esses números de calibragem abaixo para "segurar" o marcador.
+        // Teste subir de 1.0 para 1.5 ou 2.0 se ele continuar voando demais para longe.
+        const CALIBRAGEM_X = 1.0; 
+        const CALIBRAGEM_Y = 1.0; 
+
+        // O divisor base que você viu que funcionou para as coordenadas perto do centro
         const ESCALA_DIVISOR_X = 400; 
         const ESCALA_DIVISOR_Y = 400; 
 
-        function converterJogoParaMapa(jogoY, jogoX) {
-            // Define quantos pixels vale 1 unidade do jogo com base na distância até a borda
+        function converterJogoParaMapa(jogoY, juegoX) {
+            // Conta base de pixels por unidade
             const pixelsPorUnidadeX = CENTRO_JOGO_PIXEL_X / ESCALA_DIVISOR_X;
             const pixelsPorUnidadeY = CENTRO_JOGO_PIXEL_Y / ESCALA_DIVISOR_Y;
 
-            // Calcula a posição X (Horizontal) partindo do novo centro 976
-            const lng = CENTRO_JOGO_PIXEL_X + (jogoX * pixelsPorUnidadeX);
+            // Multiplica a distância do centro aplicando a taxa de calibragem para segurar o extremo
+            const lng = CENTRO_JOGO_PIXEL_X + ((juegoX * pixelsPorUnidadeX) / CALIBRAGEM_X);
             
-            // Calcula a posição Y (Vertical) invertendo o eixo a partir do novo centro 976
-            // (No Leaflet, pixels sobem de baixo para cima na conta de latitude simples)
-            const lat = CENTRO_JOGO_PIXEL_Y - (jogoY * pixelsPorUnidadeY);
+            // Aqui testamos se o Y precisa ser freado da mesma forma nos extremos
+            const lat = CENTRO_JOGO_PIXEL_Y - ((jogoY * pixelsPorUnidadeY) / CALIBRAGEM_Y);
 
             return [lat, lng];
         }
