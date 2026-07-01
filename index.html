@@ -220,32 +220,24 @@
         }
 
 // ========================================================
-        // 🛠️ MOTOR COM MULTIPLICADOR DE EXTREMOS ISOLADO
+        // 🛠️ MOTOR DE ESCALA DIRETA (EIXOS ISOLADOS)
         // ========================================================
 
+        // Âncora do 0,0,0 que você descobriu e funcionou perfeitamente
         const CENTRO_JOGO_PIXEL_X = 976;
         const CENTRO_JOGO_PIXEL_Y = 976;
 
-        // Se o marcador estiver indo MUITO LONGE nos extremos (como o 240, -176),
-        // AUMENTE esses números de calibragem abaixo para "segurar" o marcador.
-        // Teste subir de 1.0 para 1.5 ou 2.0 se ele continuar voando demais para longe.
-        const CALIBRAGEM_X = 1.0; 
-        const CALIBRAGEM_Y = 1.0; 
+        // Esses multiplicadores controlam a força do movimento das coordenadas.
+        // Se o marcador estiver indo LONGE DEMAIS nos extremos, DIMINUA o número (ex: 2.2, 1.8).
+        // Se o marcador estiver muito perto do centro, AUMENTE o número (ex: 3.5, 4.0).
+        const MULTIPLICADOR_X = 2.44; 
+        const MULTIPLICADOR_Y = 2.44; 
 
-        // O divisor base que você viu que funcionou para as coordenadas perto do centro
-        const ESCALA_DIVISOR_X = 400; 
-        const ESCALA_DIVISOR_Y = 400; 
-
-        function converterJogoParaMapa(jogoY, juegoX) {
-            // Conta base de pixels por unidade
-            const pixelsPorUnidadeX = CENTRO_JOGO_PIXEL_X / ESCALA_DIVISOR_X;
-            const pixelsPorUnidadeY = CENTRO_JOGO_PIXEL_Y / ESCALA_DIVISOR_Y;
-
-            // Multiplica a distância do centro aplicando a taxa de calibragem para segurar o extremo
-            const lng = CENTRO_JOGO_PIXEL_X + ((juegoX * pixelsPorUnidadeX) / CALIBRAGEM_X);
-            
-            // Aqui testamos se o Y precisa ser freado da mesma forma nos extremos
-            const lat = CENTRO_JOGO_PIXEL_Y - ((jogoY * pixelsPorUnidadeY) / CALIBRAGEM_Y);
+        function converterJogoParaMapa(jogoY, jogoX) {
+            // Multiplica direto a coordenada do jogo para saber quantos pixels ela deve andar
+            // a partir do centro 976x976
+            const lng = CENTRO_JOGO_PIXEL_X + (jogoX * MULTIPLICADOR_X);
+            const lat = CENTRO_JOGO_PIXEL_Y - (jogoY * MULTIPLICADOR_Y);
 
             return [lat, lng];
         }
