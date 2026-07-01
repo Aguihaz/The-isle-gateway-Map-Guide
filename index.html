@@ -219,33 +219,31 @@
             }
         }
 
-// ========================================================
-        // 🛠️ MOTOR DE ESCALA DIRETA (EIXOS ISOLADOS)
+        // ========================================================
+        // 🛠️ MOTOR DE ESCALA DIRETA (CENTRO FIXO EM 976)
         // ========================================================
 
-        // Âncora do 0,0,0 que você descobriu e funcionou perfeitamente
-        const CENTRO_JOGO_PIXEL_X = 976;
-        const CENTRO_JOGO_PIXEL_Y = 976;
+        // A posição real do 0,0,0 do jogo em pixels na imagem
+        const PIXEL_ZERO_X = 976;
+        const PIXEL_ZERO_Y = 976;
 
-        // Esses multiplicadores controlam a força do movimento das coordenadas.
-        // Se o marcador estiver indo LONGE DEMAIS nos extremos, DIMINUA o número (ex: 2.2, 1.8).
-        // Se o marcador estiver muito perto do centro, AUMENTE o número (ex: 3.5, 4.0).
-        const MULTIPLICADOR_X = 2.44; 
-        const MULTIPLICADOR_Y = 2.44; 
+        // VALORES DE CONFIGURAÇÃO: 
+        // Se a coordenada extrema (ex: 240, -176) voar muito longe para as bordas, DIMINUA estes números (ex: 1.5, 1.2).
+        // Se ela ficar colada no centro, AUMENTE estes números (ex: 3.5, 4.0).
+        const PROP_X = 2.44; 
+        const PROP_Y = 2.44; 
 
-        function converterJogoParaMapa(jogoY, jogoX) {
-            // Multiplica direto a coordenada do jogo para saber quantos pixels ela deve andar
-            // a partir do centro 976x976
-            const lng = CENTRO_JOGO_PIXEL_X + (jogoX * MULTIPLICADOR_X);
-            const lat = CENTRO_JOGO_PIXEL_Y - (jogoY * MULTIPLICADOR_Y);
-
+        function calcularCoordenadasDoJogo(y, x) {
+            // Multiplicação direta calculando a distância a partir da âncora fixa 976
+            const lng = PIXEL_ZERO_X + (x * PROP_X);
+            const lat = PIXEL_ZERO_Y - (y * PROP_Y);
             return [lat, lng];
         }
 
         let marcadorBusca = null;
 
         function spawnMarcador(jogoY, jogoX, texto) {
-            const pos = converterJogoParaMapa(jogoY, jogoX);
+            const pos = calcularCoordenadasDoJogo(jogoY, jogoX);
             
             if (marcadorBusca) {
                 map.removeLayer(marcadorBusca);
