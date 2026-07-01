@@ -220,23 +220,23 @@
         }
 
         // ========================================================
-        // 🛠️ MOTOR DE ESCALA DIRETA (CENTRO FIXO EM 976)
+        // 🛠️ CONVERSÃO PLANO PERFEITO (MATEI A DISTORÇÃO)
         // ========================================================
 
-        // A posição real do 0,0,0 do jogo em pixels na imagem
+        // O ponto zero fixo em pixels que você achou na imagem 2160x2160
         const PIXEL_ZERO_X = 976;
         const PIXEL_ZERO_Y = 976;
 
-        // VALORES DE CONFIGURAÇÃO: 
-        // Se a coordenada extrema (ex: 240, -176) voar muito longe para as bordas, DIMINUA estes números (ex: 1.5, 1.2).
-        // Se ela ficar colada no centro, AUMENTE estes números (ex: 3.5, 4.0).
-        const PROP_X = 2.44; 
-        const PROP_Y = 2.44; 
+        // Como o plano é perfeito e os extremos estão passando do ponto,
+        // diminui o multiplicador padrão para segurar o avanço linear.
+        // Se o extremo continuar indo longe demais, reduza para 1.5, 1.4, etc.
+        const ESCALA_LINEAR = 1.65; 
 
-        function calcularCoordenadasDoJogo(y, x) {
-            // Multiplicação direta calculando a distância a partir da âncora fixa 976
-            const lng = PIXEL_ZERO_X + (x * PROP_X);
-            const lat = PIXEL_ZERO_Y - (y * PROP_Y);
+        function calcularCoordenadasDoJogo(jogoY, jogoX) {
+            // Avanço linear perfeito a partir do ponto 976
+            const lng = PIXEL_ZERO_X + (jogoX * ESCALA_LINEAR);
+            const lat = PIXEL_ZERO_Y - (jogoY * ESCALA_LINEAR);
+
             return [lat, lng];
         }
 
